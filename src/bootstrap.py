@@ -1,7 +1,7 @@
 # src/bootstrap.py
 import os
 from autogen import GroupChat, GroupChatManager
-from custom_agent import PostgresMemoryAgent
+from CHSAgent import CHSAgent
 
 # Load environment variables
 OLLAMA_URL = os.getenv("OLLAMA_URL")
@@ -18,18 +18,18 @@ llm_config = {
 }
 
 # Create agents
-agent1 = PostgresMemoryAgent(
+agent1 = CHSAgent(
     name="Alice",
     persona="Friendly and curious forum user who loves asking questions.",
     llm_config=llm_config,
-    db_conn_str=PG_CONN
+    # db_conn_str=PG_CONN
 )
 
-agent2 = PostgresMemoryAgent(
+agent2 = CHSAgent(
     name="Bob",
     persona="Knowledgeable and slightly sarcastic tech enthusiast.",
     llm_config=llm_config,
-    db_conn_str=PG_CONN
+    # db_conn_str=PG_CONN
 )
 
 # Set up GroupChat

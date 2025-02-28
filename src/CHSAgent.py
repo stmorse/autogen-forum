@@ -4,7 +4,7 @@ import psycopg2
 from autogen import ConversableAgent
 from typing import List, Dict, Optional
 
-class PostgresMemoryAgent(ConversableAgent):
+class CHSAgent(ConversableAgent):
     def __init__(self, name: str, persona: str, llm_config: Dict, db_conn_str: str):
         super().__init__(name=name, llm_config=llm_config)
         self.persona = persona
