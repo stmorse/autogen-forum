@@ -3,3 +3,6 @@ venv/
 
 # ignore db
 db/
+
+# ignore pycache stuff
+__pycache__
