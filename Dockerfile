@@ -13,10 +13,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy source code
-COPY src/ /app/src/
+# COPY src/ /app/src/
 
 # Set working directory
-WORKDIR /app/src
+# WORKDIR /app/src
 
 # Command to run the bootstrap script interactively
 # CMD ["python", "bootstrap.py"]
