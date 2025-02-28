@@ -1,0 +1,63 @@
+# src/bootstrap.py
+import os
+from autogen import GroupChat, GroupChatManager
+from custom_agent import PostgresMemoryAgent
+
+# Load environment variables
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/v1")
+PG_CONN = os.getenv("PG_CONN", "postgresql://user:password@localhost:5432/forum_db")
+
+# LLM configuration for Ollama
+llm_config = {
+    "config_list": [{
+        "model": "llama3",  # Adjust to your Ollama model
+        "base_url": OLLAMA_URL,
+        "api_key": "ollama"  # Typically not needed for Ollama
+    }],
+    "cache_seed": None  # Disable caching for dynamic interactions
+}
+
+# Create agents
+agent1 = PostgresMemoryAgent(
+    name="Alice",
+    persona="Friendly and curious forum user who loves asking questions.",
+    llm_config=llm_config,
+    db_conn_str=PG_CONN
+)
+
+agent2 = PostgresMemoryAgent(
+    name="Bob",
+    persona="Knowledgeable and slightly sarcastic tech enthusiast.",
+    llm_config=llm_config,
+    db_conn_str=PG_CONN
+)
+
+# Set up GroupChat
+group_chat = GroupChat(
+    agents=[agent1, agent2],
+    messages=[],
+    max_round=10  # Limit rounds for testing
+)
+
+manager = GroupChatManager(
+    groupchat=group_chat,
+    llm_config=llm_config
+)
+
+# Interactive loop
+def main():
+    print("Starting interactive forum simulation. Type a message to begin or 'exit' to quit.")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() == "exit":
+            break
+        # Initiate chat with user message
+        response = agent1.initiate_chat(
+            recipient=manager,
+            message=user_input,
+            clear_history=False
+        )
+        print(f"Forum Response: {response}")
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,40 @@
+# deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autogen-forum
+  labels:
+    app: autogen-forum
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autogen-forum
+  template:
+    metadata:
+      labels:
+        app: autogen-forum
+    spec:
+      containers:
+      - name: autogen-forum
+        image: ghcr.io/stmorse/autogen-forum:latest  # Replace with your image registry
+        env:
+        - name: OLLAMA_URL
+          value: "http://ollama-service:11434/v1"  # Adjust to your Ollama service name
+        - name: PG_CONN
+          value: "postgresql://user:password@postgres-service:5432/forum_db"  # Adjust credentials and service name
+        ports:
+        - containerPort: 8080  # Optional, if you add an API later
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: autogen-forum-service
+spec:
+  selector:
+    app: autogen-forum
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP
