@@ -30,11 +30,20 @@ spec:
         ports:
         - containerPort: 8080  # Not needed right now
         command: ["/bin/sh", "-c", "sleep infinity"]
+        volumeMounts:
+        - name: home
+          mountPath: "/app"
+      volumes:
+      - name: home
+        nfs:
+          server: 128.239.59.144
+          path: /sciclone/geograd/stmorse/chs/autogen-forum
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: autogen-forum-service
+  name: autogen-forum
+  namespace: fais-1
 spec:
   selector:
     app: autogen-forum
