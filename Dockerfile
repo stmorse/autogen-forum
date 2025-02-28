@@ -19,4 +19,4 @@ COPY src/ /app/src/
 WORKDIR /app/src
 
 # Command to run the bootstrap script interactively
-CMD ["python", "bootstrap.py"]
+# CMD ["python", "bootstrap.py"]

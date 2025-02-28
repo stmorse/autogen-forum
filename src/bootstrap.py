@@ -4,8 +4,8 @@ from autogen import GroupChat, GroupChatManager
 from custom_agent import PostgresMemoryAgent
 
 # Load environment variables
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/v1")
-PG_CONN = os.getenv("PG_CONN", "postgresql://user:password@localhost:5432/forum_db")
+OLLAMA_URL = os.getenv("OLLAMA_URL")
+PG_CONN = os.getenv("PG_CONN")
 
 # LLM configuration for Ollama
 llm_config = {

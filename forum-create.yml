@@ -1,8 +1,8 @@
-# deployment.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: autogen-forum
+  namespace: fais-1
   labels:
     app: autogen-forum
 spec:
@@ -15,16 +15,21 @@ spec:
       labels:
         app: autogen-forum
     spec:
+      securityContext:
+        runAsUser: 270999
+        runAsGroup: 50038
+        fsGroup: 1134
       containers:
       - name: autogen-forum
-        image: ghcr.io/stmorse/autogen-forum:latest  # Replace with your image registry
+        image: ghcr.io/stmorse/autogen-forum:latest
         env:
         - name: OLLAMA_URL
-          value: "http://ollama-service:11434/v1"  # Adjust to your Ollama service name
+          value: "http://ollama.fais-1.svc.cluster.local:80"
         - name: PG_CONN
           value: "postgresql://user:password@postgres-service:5432/forum_db"  # Adjust credentials and service name
         ports:
-        - containerPort: 8080  # Optional, if you add an API later
+        - containerPort: 8080  # Not needed right now
+        command: ["/bin/sh", "-c", "sleep infinity"]
 ---
 apiVersion: v1
 kind: Service
