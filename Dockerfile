@@ -19,4 +19,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 # WORKDIR /app/src
 
 # Command to run the bootstrap script interactively
-# CMD ["python", "bootstrap.py"]
+CMD ["python", "bootstrap.py"]
