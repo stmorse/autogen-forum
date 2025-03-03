@@ -10,9 +10,10 @@ PG_CONN = os.getenv("PG_CONN")
 # LLM configuration for Ollama
 llm_config = {
     "config_list": [{
-        "model": "llama3",  # Adjust to your Ollama model
+        "model": "llama3.1:8b",  # Adjust to your Ollama model
         "base_url": OLLAMA_URL,
-        "api_key": "ollama"  # Typically not needed for Ollama
+        "api_key": "ollama",  # Typically not needed for Ollama
+        "api_type": "openai"
     }],
     "cache_seed": None  # Disable caching for dynamic interactions
 }
@@ -22,14 +23,14 @@ agent1 = CHSAgent(
     name="Alice",
     persona="Friendly and curious forum user who loves asking questions.",
     llm_config=llm_config,
-    # db_conn_str=PG_CONN
+    db_conn_str=PG_CONN
 )
 
 agent2 = CHSAgent(
     name="Bob",
     persona="Knowledgeable and slightly sarcastic tech enthusiast.",
     llm_config=llm_config,
-    # db_conn_str=PG_CONN
+    db_conn_str=PG_CONN
 )
 
 # Set up GroupChat
@@ -55,8 +56,13 @@ def main():
         response = agent1.initiate_chat(
             recipient=manager,
             message=user_input,
-            clear_history=False
+            max_turns=group_chat.max_round
         )
+        
+        # Add user message to GroupChat and let manager handle it
+        # group_chat.messages.append({"role": "user", "content": user_input})
+        # response = manager.run_chat(messages=group_chat.messages, sender=agent1)
+        
         print(f"Forum Response: {response}")
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ from typing import List, Dict, Optional
 
 class CHSAgent(ConversableAgent):
     def __init__(self, name: str, persona: str, llm_config: Dict, db_conn_str: str):
+        print(f"Initializing {name} with llm_config: {llm_config}")
         super().__init__(name=name, llm_config=llm_config)
         self.persona = persona
         self.db_conn_str = db_conn_str
