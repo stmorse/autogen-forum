@@ -1,32 +1,51 @@
-from CHSAgent import CHSAgent
-from autogen.agent_chat import GroupChat  # adjust import based on your AutoGen API
+# from CHSAgent import CHSAgent
+from autogen import ConversableAgent, GroupChat, GroupChatManager
 
 def main():
-    # Customize these endpoints and DB credentials as needed.
-    llm_endpoint = "http://ollama:80"  # example endpoint; adjust port as required
-    db_config = {
-        "host": "postgres-stm-service",
-        "port": 5432,
-        "user": "forum_user",
-        "password": "forum_password",
-        "dbname": "forum_db"
+    # llm config
+    llm_config = {
+        "config_list": [{
+            "api_type": "ollama",
+            "model": "llama3.1:8b",
+            "client_host": "http://ollama:80",
+            "stream": False,
+        }],
     }
 
-    # Create two agents.
-    agent1 = CHSAgent(name="Agent1", llm_endpoint=llm_endpoint, db_config=db_config)
-    agent2 = CHSAgent(name="Agent2", llm_endpoint=llm_endpoint, db_config=db_config)
+    # create 3 agents
+    agents = []
+    agent_config = {
+        "Alice": "You are an outgoing neuroscientist. You love playing Civ 6.",
+        "Bob": "You are a persnickety high school biology teacher. You love playing Civ 6.",
+        "Cora": "You are an opinionated graphic artist. You love playing Civ 6."
+    }
+    for name, msg in agent_config.items():
+        agents.append(
+            ConversableAgent(
+                name=name,
+                llm_config=llm_config,
+                system_message=msg + " Keep your responses to a paragraph or less.",
+            )
+        )
     
-    # Instantiate a group chat session with both agents.
-    chat = GroupChat(agents=[agent1, agent2])
+    groupchat = GroupChat(
+        agents=agents,
+        speaker_selection_method="auto",
+        messages=[],
+        max_round=5,
+    )
+
+    manager = GroupChatManager(
+        name="mod",
+        groupchat=groupchat,
+        llm_config=llm_config,
+    )
+
+    agents[0].initiate_chat(
+        recipient=manager,
+        message="What do we think about the religious victory in Civ 6?"
+    )
     
-    print("Starting group chat (type 'exit' to quit).")
-    while True:
-        message = input("You: ")
-        if message.lower() == "exit":
-            break
-        # Dispatch message to agents; adjust behavior per your API.
-        response = chat.send(message)
-        print("Chat:", response)
 
 if __name__ == "__main__":
     main()
