@@ -1,5 +1,6 @@
-FROM python:3.10-slim
+FROM python:3.11-slim
 
+# set working directory
 WORKDIR /app
 
 # Install dependencies from a non-overridden directory
