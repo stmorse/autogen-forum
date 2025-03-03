@@ -1,54 +1,26 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: autogen-forum
-  namespace: fais-1
-  labels:
-    app: autogen-forum
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: autogen-forum
-  template:
-    metadata:
-      labels:
-        app: autogen-forum
-    spec:
-      securityContext:
-        runAsUser: 270999
-        runAsGroup: 50038
-        fsGroup: 1134
-      containers:
-      - name: autogen-forum
-        image: ghcr.io/stmorse/autogen-forum:latest
-        env:
-        - name: OLLAMA_URL
-          value: "http://ollama.fais-1.svc.cluster.local:80"
-        - name: PG_CONN
-          value: "postgresql://forum_user:forum_password@postgres-stm-service.fais-1.svc.cluster.local:5432/forum_db"
-        ports:
-        - containerPort: 8080  # Not needed right now
-        command: ["/bin/sh", "-c", "sleep infinity"]
-        volumeMounts:
-        - name: home
-          mountPath: "/app"
-      volumes:
-      - name: home
-        nfs:
-          server: 128.239.59.144
-          path: /sciclone/geograd/stmorse/chs/autogen-forum
----
 apiVersion: v1
-kind: Service
+kind: Pod
 metadata:
-  name: autogen-forum
+  name: forum
   namespace: fais-1
 spec:
-  selector:
-    app: autogen-forum
-  ports:
-  - protocol: TCP
-    port: 8080
-    targetPort: 8080
-  type: ClusterIP
+  securityContext:
+    runAsUser: 270999
+    runAsGroup: 50038
+    fsGroup: 1134
+  containers:
+  - name: forum-container
+    image: ghcr.io/stmorse/autogen-forum:latest
+    resources:
+      requests:
+        memory: '4Gi'
+        cpu: '1'
+    command: ['/bin/bash', '-c', 'sleep infinity']
+    volumeMounts:
+    - name: code-volume
+      mountPath: /app
+  volumes:
+  - name: code-volume
+    nfs:
+      server: 128.239.59.144
+      path: /sciclone/geograd/stmorse/chs/autogen-forum
