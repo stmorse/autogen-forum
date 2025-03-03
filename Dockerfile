@@ -6,4 +6,5 @@ WORKDIR /app
 COPY requirements.txt /build/requirements.txt
 RUN pip install --no-cache-dir -r /build/requirements.txt
 
+# for interactive
 CMD ["python", "bootstrap.py"]
