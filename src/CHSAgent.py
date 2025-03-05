@@ -1,8 +1,8 @@
 import psycopg2
 import requests
-from autogen.agent import BaseAgent  # adjust import based on your AutoGen package structure
+from autogen import ConversableAgent
 
-class CHSAgent(BaseAgent):
+class CHSAgent(ConversableAgent):
     def __init__(self, name, llm_endpoint, db_config):
         super().__init__(name=name, llm_endpoint=llm_endpoint)
         self.db_config = db_config
