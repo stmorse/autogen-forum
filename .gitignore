@@ -7,3 +7,5 @@ db/
 # ignore pycache stuff
 __pycache__
 .cache
+
+*.ini
